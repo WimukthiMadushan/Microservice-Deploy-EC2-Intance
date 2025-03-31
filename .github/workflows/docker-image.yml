@@ -22,9 +22,10 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/microservice:latest
   deploy:
     runs-on: self-hosted
+    needs: build
     steps:
       - name: Pull the latest Docker image
-        run: sudo docker pull wimukthibandara/microserice:latest
+        run: sudo docker pull wimukthibandara/microservice:latest
       - name: Stop and remove old Docker container (if running)
         run: |
           sudo docker stop microservice-container || true
