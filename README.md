@@ -8,38 +8,3 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ## Workflow File
-
-name: CICD With Docker
-on:
-  push:
-  
-    branches: [ "main" ]
-
-jobs:
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Login to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-      - name: Build the Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/microservice:latest .
-      - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/microservice:latest
-  deploy:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Pull the latest Docker image
-        run: sudo docker pull wimukthibandara/microservice:latest
-      - name: Stop and remove old Docker container (if running)
-        run: |
-          sudo docker stop microservice-container || true
-          sudo docker rm microservice-container || true
-      - name: Run new Docker container
-        run: sudo docker run -d -p 8080:8080 --name microservice-container wimukthibandara/microservice:latest
