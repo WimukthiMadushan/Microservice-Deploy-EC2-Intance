@@ -1,1 +1,1 @@
-# Microservice-Deploy-EC2-Intance
+# Simple-Microservice-Deploy-EC2-Instance
